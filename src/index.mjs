@@ -9,7 +9,7 @@ console.log(`${req.method}-${req.url}`);
 next();
 }
 
-app.use(loggingMiddleware);
+// app.use(loggingMiddleware);
 
 const MockUsers = [
   { id: 1, displayname: "John", username: "jonathan", },
@@ -24,7 +24,7 @@ app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`);
 });
 
-app.get("/", (req, res) => {
+app.get("/", loggingMiddleware, (req, res) => {
   // res.send("Hello World!");
   res.status(200).json({ msg: "Hello World!" });
 });
