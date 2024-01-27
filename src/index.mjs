@@ -4,6 +4,13 @@ import config from "./config/index.mjs";
 const app = express();
 app.use(express.json());
 
+const loggingMiddleware = (req, res, next)=>{
+console.log(`${req.method}-${req.url}`);
+next();
+}
+
+app.use(loggingMiddleware);
+
 const MockUsers = [
   { id: 1, displayname: "John", username: "jonathan", },
   { id: 2, displayname: "Kevin", username: "kevin", },
@@ -125,11 +132,9 @@ app.patch("/api/users/:id", (req, res) => {
 app.delete("/api/users/:id", (req, res) => {
   const { params: { id } } = req;
   const parseId = parseInt(id);
-  if (isNaN(parseId)) {
-    return res.sendStatus(404);
-  }
+  if (isNaN(parseId))  return res.sendStatus(400);
   const findUserIndex = MockUsers.findIndex((user) => user.id === parseId);
   if (findUserIndex === -1) return res.sendStatus(404);
-  MockUsers.splice(findUserIndex);
+  MockUsers.splice(findUserIndex,1);
   return res.sendStatus(200);
 });
