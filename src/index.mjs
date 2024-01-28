@@ -4,9 +4,9 @@ import config from "./config/index.mjs";
 const app = express();
 app.use(express.json());
 
-const loggingMiddleware = (req, res, next)=>{
-console.log(`${req.method}-${req.url}`);
-next();
+const loggingMiddleware = (req, res, next) => {
+  console.log(`${req.method}-${req.url}`);
+  next();
 }
 
 // app.use(loggingMiddleware);
@@ -24,10 +24,29 @@ app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`);
 });
 
-app.get("/", loggingMiddleware, (req, res) => {
-  // res.send("Hello World!");
-  res.status(200).json({ msg: "Hello World!" });
-});
+// app.get("/", loggingMiddleware, (req, res) => {
+//   // res.send("Hello World!");
+//   res.status(200).json({ msg: "Hello World!" });
+// });
+
+app.get("/", 
+// (req, res, next) => {
+//   console.log("Base URL 1")
+//   next();
+// },
+//   (req, res, next) => {
+//     console.log("Base URL 2")
+//     next();
+//   },
+//   (req, res, next) => {
+//     console.log("Base URL 3")
+//     next();
+//   },
+  (req, res) => {
+    // res.send("Hello World!");
+    res.status(200).json({ msg: "Hello World!" });
+  });
+
 
 app.get("/api/users", (req, res) => {
   console.log(req.query);
@@ -47,6 +66,9 @@ app.get("/api/users", (req, res) => {
   }
   return res.send(MockUsers);
 });
+
+
+app.use(loggingMiddleware);
 
 // app.get("/api/users/:id", (req, res) => {
 //   console.log(req.params);
@@ -132,9 +154,9 @@ app.patch("/api/users/:id", (req, res) => {
 app.delete("/api/users/:id", (req, res) => {
   const { params: { id } } = req;
   const parseId = parseInt(id);
-  if (isNaN(parseId))  return res.sendStatus(400);
+  if (isNaN(parseId)) return res.sendStatus(400);
   const findUserIndex = MockUsers.findIndex((user) => user.id === parseId);
   if (findUserIndex === -1) return res.sendStatus(404);
-  MockUsers.splice(findUserIndex,1);
+  MockUsers.splice(findUserIndex, 1);
   return res.sendStatus(200);
 });
